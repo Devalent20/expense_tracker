@@ -12,9 +12,9 @@ import { TransactionService } from '../../services/transaction.service';
 export class BalanceCardComponent {
   private transactionService = inject(TransactionService);
 
-  totalBalance = this.transactionService.totalBalance;
-  totalIncome = this.transactionService.totalIncome;
-  totalExpense = this.transactionService.totalExpense;
+  openingBalance = this.transactionService.openingBalance;
+  closingBalance = this.transactionService.closingBalance;
+  monthlyNet = this.transactionService.monthlyNet;
 
   isEditing = false;
 

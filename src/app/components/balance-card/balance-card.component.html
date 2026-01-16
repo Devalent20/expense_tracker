@@ -1,30 +1,31 @@
-
 <div class="balance-container">
   <div class="main-balance">
     <div class="label">
-      Balance Total 
+      Saldo Final (Mes)
       <button class="edit-btn" (click)="toggleEdit()" title="Editar balance">✎</button>
     </div>
     
-    <div *ngIf="!isEditing" class="amount" [class.negative]="totalBalance() < 0">
-      {{ totalBalance() | currency:'EUR' }}
+    <div *ngIf="!isEditing" class="amount" [class.negative]="closingBalance() < 0">
+      {{ closingBalance() | currency:'EUR' }}
     </div>
 
     <div *ngIf="isEditing" class="edit-form">
-      <input #balanceInput type="number" [value]="totalBalance()" (keyup.enter)="saveBalance(balanceInput.value)" placeholder="0.00">
+      <input #balanceInput type="number" [value]="closingBalance()" (keyup.enter)="saveBalance(balanceInput.value)" placeholder="0.00">
       <button (click)="saveBalance(balanceInput.value)">OK</button>
       <button (click)="toggleEdit()" class="cancel-btn">✕</button>
     </div>
   </div>
 
   <div class="breakdown">
-    <div class="card income">
-      <div class="label">Ingresos</div>
-      <div class="value">+{{ totalIncome() | currency:'EUR' }}</div>
+    <div class="card secondary">
+      <div class="label">Saldo Inicial</div>
+      <div class="value">{{ openingBalance() | currency:'EUR' }}</div>
     </div>
-    <div class="card expense">
-      <div class="label">Gastos</div>
-      <div class="value">-{{ totalExpense() | currency:'EUR' }}</div>
+    <div class="card result">
+      <div class="label">Diferencia</div>
+      <div class="value" [class.positive]="monthlyNet() >= 0" [class.negative]="monthlyNet() < 0">
+        {{ monthlyNet() > 0 ? '+' : '' }}{{ monthlyNet() | currency:'EUR' }}
+      </div>
     </div>
   </div>
 </div>

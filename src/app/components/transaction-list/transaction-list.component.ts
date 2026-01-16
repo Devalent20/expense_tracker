@@ -12,7 +12,7 @@ import { TransactionService } from '../../services/transaction.service';
 export class TransactionListComponent {
   private transactionService = inject(TransactionService);
   
-  transactions = this.transactionService.allTransactions;
+  transactions = this.transactionService.monthlyTransactions;
 
   deleteTransaction(id: string) {
     this.transactionService.deleteTransaction(id);

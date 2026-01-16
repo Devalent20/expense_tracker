@@ -1,0 +1,13 @@
+<div class="month-selector">
+  <button (click)="prevMonth()" class="nav-btn">
+    ←
+  </button>
+  
+  <div class="current-month">
+    {{ selectedMonth() | date:'MMMM yyyy' : '' : 'es-ES' }}
+  </div>
+
+  <button (click)="nextMonth()" class="nav-btn">
+    →
+  </button>
+</div>
