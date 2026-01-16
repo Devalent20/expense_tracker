@@ -1,0 +1,19 @@
+<div class="balance-container">
+  <div class="main-balance">
+    <div class="label">Balance Total</div>
+    <div class="amount" [class.negative]="totalBalance() < 0">
+      {{ totalBalance() | currency:'EUR' }}
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <div class="card income">
+      <div class="label">Ingresos</div>
+      <div class="value">+{{ totalIncome() | currency:'EUR' }}</div>
+    </div>
+    <div class="card expense">
+      <div class="label">Gastos</div>
+      <div class="value">-{{ totalExpense() | currency:'EUR' }}</div>
+    </div>
+  </div>
+</div>

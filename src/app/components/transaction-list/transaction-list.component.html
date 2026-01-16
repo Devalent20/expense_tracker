@@ -1,0 +1,34 @@
+<div class="transaction-list-card">
+  <h3 class="title">Historial</h3>
+
+  <div class="list-container">
+    <div *ngIf="transactions().length === 0" class="empty-state">
+      <p>No hay transacciones registradas.</p>
+    </div>
+
+    <div *ngFor="let transaction of transactions()" class="transaction-item">
+      <div class="transaction-icon" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
+        <!-- Simple icon based on type -->
+        <span *ngIf="transaction.type === 'income'">↓</span>
+        <span *ngIf="transaction.type === 'expense'">↑</span>
+      </div>
+      
+      <div class="transaction-details">
+        <div class="transaction-header">
+          <span class="transaction-title">{{ transaction.title }}</span>
+          <span class="transaction-amount" [class.positive]="transaction.type === 'income'" [class.negative]="transaction.type === 'expense'">
+            {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount | currency:'EUR' }}
+          </span>
+        </div>
+        <div class="transaction-meta">
+          <span class="transaction-category">{{ transaction.category }}</span>
+          <span class="transaction-date">{{ transaction.date | date:'mediumDate' }}</span>
+        </div>
+      </div>
+
+      <button class="delete-btn" (click)="deleteTransaction(transaction.id)" title="Eliminar">
+        ×
+      </button>
+    </div>
+  </div>
+</div>

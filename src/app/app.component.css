@@ -1,0 +1,46 @@
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  flex: 1;
+  min-height: 0; /* Allow flex child to scroll */
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 350px 1fr;
+    align-items: start;
+  }
+
+  .right-column {
+    height: 100%;
+  }
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
