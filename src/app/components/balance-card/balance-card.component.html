@@ -1,8 +1,19 @@
+
 <div class="balance-container">
   <div class="main-balance">
-    <div class="label">Balance Total</div>
-    <div class="amount" [class.negative]="totalBalance() < 0">
+    <div class="label">
+      Balance Total 
+      <button class="edit-btn" (click)="toggleEdit()" title="Editar balance">✎</button>
+    </div>
+    
+    <div *ngIf="!isEditing" class="amount" [class.negative]="totalBalance() < 0">
       {{ totalBalance() | currency:'EUR' }}
+    </div>
+
+    <div *ngIf="isEditing" class="edit-form">
+      <input #balanceInput type="number" [value]="totalBalance()" (keyup.enter)="saveBalance(balanceInput.value)" placeholder="0.00">
+      <button (click)="saveBalance(balanceInput.value)">OK</button>
+      <button (click)="toggleEdit()" class="cancel-btn">✕</button>
     </div>
   </div>
 

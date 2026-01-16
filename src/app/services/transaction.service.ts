@@ -40,10 +40,12 @@ export class TransactionService {
     }
   ]);
 
+  private initialBalance = signal<number>(0);
+
   readonly allTransactions = this.transactions.asReadonly();
 
   readonly totalBalance = computed(() => 
-    this.transactions().reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0)
+    this.initialBalance() + this.transactions().reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0)
   );
 
   readonly totalIncome = computed(() => 
@@ -69,5 +71,13 @@ export class TransactionService {
 
   deleteTransaction(id: string) {
     this.transactions.update(items => items.filter(t => t.id !== id));
+  }
+
+  updateInitialBalance(newTotal: number) {
+    const currentIncome = this.totalIncome();
+    const currentExpense = this.totalExpense();
+    const currentNet = currentIncome - currentExpense;
+    // initial = desired_total - (income - expense)
+    this.initialBalance.set(newTotal - currentNet);
   }
 }

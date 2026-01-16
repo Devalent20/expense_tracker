@@ -22,6 +22,13 @@ export class AddTransactionComponent {
     category: ['Otros', Validators.required]
   });
 
+  constructor() {
+    this.transactionForm.get('type')?.valueChanges.subscribe(type => {
+      const defaultCategory = type === 'income' ? 'Ahorros' : 'Otros';
+      this.transactionForm.patchValue({ category: defaultCategory });
+    });
+  }
+
   expenseCategories: ExpenseCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Otros'];
   incomeCategories: IncomeCategory[] = ['Ahorros', 'Nómina', 'Bizum'];
 

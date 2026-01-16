@@ -12,6 +12,7 @@
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
 }
 
 .main-balance .label {
@@ -20,6 +21,25 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.edit-btn:hover {
+  opacity: 1;
 }
 
 .main-balance .amount {
@@ -32,11 +52,54 @@
   color: #fca5a5;
 }
 
+/* Edit Form Styles */
+.edit-form {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.edit-form input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  width: 120px;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.edit-form button {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.edit-form button:first-of-type {
+  background: #16a34a; /* Green OK */
+  color: white;
+}
+
+.edit-form .cancel-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.edit-form button:hover {
+  opacity: 0.9;
+}
+
 .breakdown {
   display: flex;
   gap: 1rem;
 }
 
+/* ... existing breakdown styles ... */
 .card {
   flex: 1;
   background: white;

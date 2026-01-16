@@ -15,4 +15,18 @@ export class BalanceCardComponent {
   totalBalance = this.transactionService.totalBalance;
   totalIncome = this.transactionService.totalIncome;
   totalExpense = this.transactionService.totalExpense;
+
+  isEditing = false;
+
+  toggleEdit() {
+    this.isEditing = !this.isEditing;
+  }
+
+  saveBalance(amount: string) {
+    const value = parseFloat(amount);
+    if (!isNaN(value)) {
+      this.transactionService.updateInitialBalance(value);
+    }
+    this.isEditing = false;
+  }
 }
