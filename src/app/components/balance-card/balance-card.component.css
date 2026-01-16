@@ -6,13 +6,14 @@
 }
 
 .main-balance {
-  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb); /* Strong Blue Gradient */
   color: white;
   padding: 1.5rem;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
   position: relative;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .main-balance .label {
@@ -46,6 +47,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .amount.negative {
@@ -63,12 +65,19 @@
 .edit-form input {
   padding: 0.5rem;
   border-radius: 6px;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.2);
   width: 120px;
   font-size: 1.2rem;
   text-align: center;
   font-weight: 600;
-  color: #1e40af;
+  color: white;
+  background: rgba(0,0,0,0.2);
+}
+
+.edit-form input:focus {
+  background: rgba(0,0,0,0.3);
+  outline: none;
+  border-color: rgba(255,255,255,0.5);
 }
 
 .edit-form button {
@@ -81,12 +90,12 @@
 }
 
 .edit-form button:first-of-type {
-  background: #16a34a; /* Green OK */
+  background: #22c55e; /* Green OK */
   color: white;
 }
 
 .edit-form .cancel-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
   color: white;
 }
 
@@ -99,19 +108,19 @@
   gap: 1rem;
 }
 
-/* ... existing breakdown styles ... */
 .card {
   flex: 1;
-  background: white;
+  background: #1e293b; /* Dark Blue-Grey Card */
   padding: 1rem;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #334155;
 }
 
 .card .label {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: #94a3b8; /* Lighter text for dark bg */
   margin-bottom: 0.25rem;
   text-transform: uppercase;
   font-weight: 600;
@@ -123,9 +132,9 @@
 }
 
 .card.income .value {
-  color: #16a34a;
+  color: #4ade80; /* Bright Green */
 }
 
 .card.expense .value {
-  color: #dc2626;
+  color: #f87171; /* Bright Red */
 }
