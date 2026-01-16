@@ -122,17 +122,16 @@ export class TransactionService {
     this.transactions.update(items => items.filter(t => t.id !== id));
   }
 
-  updateInitialBalance(targetClosingBalance: number) {
+  updateOpeningBalance(targetOpening: number) {
     const selected = this.selectedMonth();
-    const nextMonth = new Date(selected.getFullYear(), selected.getMonth() + 1, 1);
     
-    // Calculate net of all transactions up to the end of the selected month
-    const netUntilMonthEnd = this.transactions()
-      .filter(t => t.date < nextMonth)
+    // Calculate net of all transactions BEFORE the selected month
+    const netBeforeMonth = this.transactions()
+      .filter(t => t.date < selected)
       .reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
 
-    // initial + net = target  =>  initial = target - net
-    this.initialBalance.set(targetClosingBalance - netUntilMonthEnd);
+    // initial + netBefore = targetOpening  =>  initial = targetOpening - netBefore
+    this.initialBalance.set(targetOpening - netBeforeMonth);
   }
 
   // Navigation methods

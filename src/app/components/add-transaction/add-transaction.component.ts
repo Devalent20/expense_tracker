@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
-import { ExpenseCategory, IncomeCategory, TransactionCategory, TransactionType } from '../../models/transaction.model';
+import { ExpenseCategory, IncomeCategory, TransactionCategory, TransactionType, CategoryIcons } from '../../models/transaction.model';
 
 @Component({
   selector: 'app-add-transaction',
@@ -28,6 +28,8 @@ export class AddTransactionComponent {
       this.transactionForm.patchValue({ category: defaultCategory });
     });
   }
+
+  icons = CategoryIcons;
 
   expenseCategories: ExpenseCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Otros'];
   incomeCategories: IncomeCategory[] = ['Ahorros', 'Nómina', 'Bizum'];

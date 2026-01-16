@@ -29,7 +29,7 @@
     <div class="form-group">
       <label for="category">Categoría</label>
       <select id="category" formControlName="category">
-        <option *ngFor="let cat of currentCategories" [value]="cat">{{ cat }}</option>
+        <option *ngFor="let cat of currentCategories" [value]="cat">{{ icons[cat] }} {{ cat }}</option>
       </select>
     </div>
 

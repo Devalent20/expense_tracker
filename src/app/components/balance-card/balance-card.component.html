@@ -1,25 +1,27 @@
 <div class="balance-container">
   <div class="main-balance">
     <div class="label">
-      Saldo Final (Mes)
-      <button class="edit-btn" (click)="toggleEdit()" title="Editar balance">✎</button>
+      Saldo Actual
     </div>
     
-    <div *ngIf="!isEditing" class="amount" [class.negative]="closingBalance() < 0">
+    <div class="amount" [class.negative]="closingBalance() < 0">
       {{ closingBalance() | currency:'EUR' }}
-    </div>
-
-    <div *ngIf="isEditing" class="edit-form">
-      <input #balanceInput type="number" [value]="closingBalance()" (keyup.enter)="saveBalance(balanceInput.value)" placeholder="0.00">
-      <button (click)="saveBalance(balanceInput.value)">OK</button>
-      <button (click)="toggleEdit()" class="cancel-btn">✕</button>
     </div>
   </div>
 
   <div class="breakdown">
     <div class="card secondary">
-      <div class="label">Saldo Inicial</div>
-      <div class="value">{{ openingBalance() | currency:'EUR' }}</div>
+      <div class="label">
+        Saldo Inicial
+        <button class="edit-btn" (click)="toggleEdit()" title="Editar inicial">✎</button>
+      </div>
+      <div *ngIf="!isEditing" class="value">{{ openingBalance() | currency:'EUR' }}</div>
+      
+      <div *ngIf="isEditing" class="edit-form-small">
+        <input #balanceInput type="number" [value]="openingBalance()" (keyup.enter)="saveBalance(balanceInput.value)" placeholder="0.00">
+        <button (click)="saveBalance(balanceInput.value)">OK</button>
+        <button (click)="toggleEdit()" class="cancel-btn">✕</button>
+      </div>
     </div>
     <div class="card result">
       <div class="label">Diferencia</div>

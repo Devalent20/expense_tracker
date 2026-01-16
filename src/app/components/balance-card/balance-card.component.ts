@@ -25,7 +25,7 @@ export class BalanceCardComponent {
   saveBalance(amount: string) {
     const value = parseFloat(amount);
     if (!isNaN(value)) {
-      this.transactionService.updateInitialBalance(value);
+      this.transactionService.updateOpeningBalance(value);
     }
     this.isEditing = false;
   }

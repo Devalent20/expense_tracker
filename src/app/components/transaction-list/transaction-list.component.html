@@ -1,16 +1,20 @@
 <div class="transaction-list-card">
-  <h3 class="title">Historial</h3>
+  <div class="header-row">
+    <h3 class="title">Movimientos</h3>
+    <select [(ngModel)]="categoryFilter" class="category-filter">
+      <option value="">Todas</option>
+      <option *ngFor="let cat of allCategories" [value]="cat">{{ icons[cat] }} {{ cat }}</option>
+    </select>
+  </div>
 
   <div class="list-container">
-    <div *ngIf="transactions().length === 0" class="empty-state">
-      <p>No hay transacciones registradas.</p>
+    <div *ngIf="filteredTransactions().length === 0" class="empty-state">
+      <p>No hay movimientos registrados.</p>
     </div>
 
-    <div *ngFor="let transaction of transactions()" class="transaction-item">
+    <div *ngFor="let transaction of filteredTransactions()" class="transaction-item">
       <div class="transaction-icon" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
-        <!-- Simple icon based on type -->
-        <span *ngIf="transaction.type === 'income'">↓</span>
-        <span *ngIf="transaction.type === 'expense'">↑</span>
+        {{ icons[transaction.category] }}
       </div>
       
       <div class="transaction-details">

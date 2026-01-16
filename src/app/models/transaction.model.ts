@@ -13,3 +13,16 @@ export interface Transaction {
   date: Date;
   category: TransactionCategory;
 }
+
+export const CategoryIcons: Record<TransactionCategory, string> = {
+  'Juegos': '🎮',
+  'Comidas': '🍔',
+  'Compras': '🛍️',
+  'Viajes': '✈️',
+  'Suscripciones': '📅',
+  'Regalos': '🎁',
+  'Otros': '📦',
+  'Ahorros': '💰',
+  'Nómina': '💼',
+  'Bizum': '📱'
+};

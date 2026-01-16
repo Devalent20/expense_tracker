@@ -5,22 +5,47 @@
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   height: 100%; /* Fill available space */
   border: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .title {
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0;
   color: #f8fafc;
+}
+
+.category-filter {
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.category-filter:focus {
+  border-color: #3b82f6;
 }
 
 .list-container {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-height: 600px; /* Scrollable list if too long */
   overflow-y: auto;
   padding-right: 4px; /* Space for scrollbar */
+  flex: 1; /* Take remaining height */
+  min-height: 0; /* Important for flex scrolling */
 }
+
+/* ... Existing styles ... */
 
 .empty-state {
   text-align: center;
