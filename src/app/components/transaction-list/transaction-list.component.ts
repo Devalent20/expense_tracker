@@ -67,6 +67,13 @@ export class TransactionListComponent {
     return list.filter(t => t.category === filter);
   });
 
+  filteredTotal = computed(() => {
+    const transactions = this.filteredTransactions();
+    return transactions.reduce((acc, t) => 
+      t.type === 'income' ? acc + t.amount : acc - t.amount, 0
+    );
+  });
+
   deleteTransaction(id: string) {
     this.transactionService.deleteTransaction(id);
   }

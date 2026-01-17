@@ -13,6 +13,13 @@
     </select>
   </div>
 
+  <div class="filter-summary" *ngIf="categoryFilter()">
+    <span class="summary-label">Total en {{ categoryFilter() }}:</span>
+    <span class="summary-amount" [class.positive]="filteredTotal() >= 0" [class.negative]="filteredTotal() < 0">
+      {{ filteredTotal() | currency:'EUR' }}
+    </span>
+  </div>
+
   <div class="list-container">
     <div *ngIf="filteredTransactions().length === 0" class="empty-state">
       <p>No hay movimientos registrados.</p>

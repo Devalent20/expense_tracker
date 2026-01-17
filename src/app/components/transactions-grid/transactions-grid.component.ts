@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
 import { ExportService } from '../../services/export.service';
-import { CategoryIcons, Transaction } from '../../models/transaction.model';
+import { CategoryIcons, Transaction, TransactionCategory } from '../../models/transaction.model';
 
 @Component({
   selector: 'app-transactions-grid',
@@ -30,6 +30,36 @@ export class TransactionsGridComponent {
   selectedAccount = this.transactionService.selectedAccount;
   
   icons = CategoryIcons;
+  allCategories: TransactionCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Otros', 'Ahorros', 'Nómina', 'Bizum'].sort() as TransactionCategory[];
+  categoryFilter = signal<string>('');
+
+  filteredTransactions = computed(() => {
+    const filter = this.categoryFilter();
+    const list = this.monthlyTransactions();
+    if (!filter) return list;
+    return list.filter(t => t.category === filter);
+  });
+
+  filteredTotal = computed(() => {
+    const list = this.filteredTransactions();
+    return list.reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
+  });
+
+  categorySummaries = computed(() => {
+    const list = this.monthlyTransactions();
+    const map = new Map<TransactionCategory, number>();
+
+    list.forEach(t => {
+      const current = map.get(t.category) || 0;
+      const amount = t.type === 'income' ? t.amount : -t.amount;
+      map.set(t.category, current + amount);
+    });
+
+    return Array.from(map.entries())
+      .map(([category, total]) => ({ category, total }))
+      .filter(item => item.total !== 0)
+      .sort((a, b) => a.total - b.total); // Most negative (expenses) first
+  });
 
   onSelect(transaction: Transaction) {
     this.select.emit(transaction);

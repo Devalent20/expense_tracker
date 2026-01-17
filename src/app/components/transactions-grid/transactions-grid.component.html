@@ -6,8 +6,26 @@
         <span class="subtitle">{{ selectedMonth() | date:'MMMM yyyy' }} - {{ selectedAccount() | uppercase }}</span>
       </div>
       <div class="header-actions">
+        <select [(ngModel)]="categoryFilter" class="grid-category-filter">
+          <option value="">Todas las categorías</option>
+          <option *ngFor="let cat of allCategories" [value]="cat">{{ icons[cat] }} {{ cat }}</option>
+        </select>
         <button class="export-btn" (click)="onExport()">📥 Exportar a Excel</button>
         <button class="close-btn" (click)="onClose()">Volver al Dashboard</button>
+      </div>
+    </div>
+
+    <div class="filter-summary" *ngIf="categoryFilter()">
+      <span class="summary-label">Total en {{ categoryFilter() }}:</span>
+      <span class="summary-amount" [class.positive]="filteredTotal() >= 0" [class.negative]="filteredTotal() < 0">
+        {{ filteredTotal() | currency:'EUR' }}
+      </span>
+    </div>
+
+    <div class="categories-summary-bar" *ngIf="categorySummaries().length > 0">
+      <div class="summary-card" *ngFor="let item of categorySummaries()" [class.negative]="item.total < 0" [class.positive]="item.total > 0">
+        <span class="summary-category">{{ icons[item.category] }} {{ item.category }}</span>
+        <span class="summary-value">{{ item.total | currency:'EUR' }}</span>
       </div>
     </div>
 
@@ -24,7 +42,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let t of monthlyTransactions()" 
+          <tr *ngFor="let t of filteredTransactions()" 
               [class.income-row]="t.type === 'income'" 
               [class.expense-row]="t.type === 'expense'"
               (click)="onSelect(t)"
