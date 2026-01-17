@@ -48,7 +48,7 @@ export class AddTransactionComponent {
 
   icons = CategoryIcons;
 
-  expenseCategories: ExpenseCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Regalos', 'Otros'];
+  expenseCategories: ExpenseCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Ahorros', 'Vivienda', 'Otros'];
   incomeCategories: IncomeCategory[] = ['Ahorros', 'Nómina', 'Bizum'];
 
   // Getter to switch categories based on type

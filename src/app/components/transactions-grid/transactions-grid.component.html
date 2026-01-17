@@ -3,7 +3,12 @@
     <div class="grid-header">
       <div class="header-info">
         <h2>Detalle de Movimientos</h2>
-        <span class="subtitle">{{ selectedMonth() | date:'MMMM yyyy' }} - {{ selectedAccount() | uppercase }}</span>
+        <div class="subtitle-row">
+          <span class="subtitle">{{ selectedMonth() | date:'MMMM yyyy' }} - {{ selectedAccount() | uppercase }}</span>
+          <span class="header-balance" [class.negative]="closingBalance() < 0">
+            Saldo: {{ closingBalance() | currency:'EUR' }}
+          </span>
+        </div>
       </div>
       <div class="header-actions">
         <select [(ngModel)]="categoryFilter" class="grid-category-filter">

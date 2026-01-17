@@ -1,6 +1,6 @@
 export type TransactionType = 'income' | 'expense';
 
-export type ExpenseCategory = 'Juegos' | 'Comidas' | 'Compras' | 'Viajes' | 'Suscripciones' | 'Regalos' | 'Otros';
+export type ExpenseCategory = 'Juegos' | 'Comidas' | 'Compras' | 'Viajes' | 'Suscripciones' | 'Regalos' | 'Ahorros' | 'Vivienda' | 'Otros';
 export type IncomeCategory = 'Ahorros' | 'Nómina' | 'Bizum';
 
 export type TransactionCategory = ExpenseCategory | IncomeCategory;
@@ -37,6 +37,7 @@ export const CategoryIcons: Record<TransactionCategory, string> = {
   'Viajes': '✈️',
   'Suscripciones': '📅',
   'Regalos': '🎁',
+  'Vivienda': '🏠',
   'Otros': '📦',
   'Ahorros': '💰',
   'Nómina': '💼',

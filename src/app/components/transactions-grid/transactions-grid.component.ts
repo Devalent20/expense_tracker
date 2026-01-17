@@ -28,6 +28,7 @@ export class TransactionsGridComponent {
   monthlyTransactions = this.transactionService.monthlyTransactions;
   selectedMonth = this.transactionService.selectedMonth;
   selectedAccount = this.transactionService.selectedAccount;
+  closingBalance = this.transactionService.closingBalance;
   
   icons = CategoryIcons;
   allCategories: TransactionCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Otros', 'Ahorros', 'Nómina', 'Bizum'].sort() as TransactionCategory[];
