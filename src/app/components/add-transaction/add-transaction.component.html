@@ -33,6 +33,13 @@
       </select>
     </div>
 
+    <div class="form-group checkbox-group">
+      <label class="checkbox-label">
+        <input type="checkbox" formControlName="isRecurring">
+        <span>Repetir cada mes (Suscripción/Fijo)</span>
+      </label>
+    </div>
+
     <button type="submit" [disabled]="transactionForm.invalid">Añadir</button>
   </form>
 </div>

@@ -19,7 +19,8 @@ export class AddTransactionComponent {
     title: ['', Validators.required],
     amount: [0, [Validators.required, Validators.min(0.01)]],
     type: ['expense' as TransactionType, Validators.required],
-    category: ['Otros', Validators.required]
+    category: ['Otros', Validators.required],
+    isRecurring: [false]
   });
 
   constructor() {
@@ -44,19 +45,27 @@ export class AddTransactionComponent {
   onSubmit() {
     if (this.transactionForm.valid) {
       const formValue = this.transactionForm.value;
-      this.transactionService.addTransaction({
+      
+      const transactionData = {
         title: formValue.title!,
         amount: Number(formValue.amount),
         type: formValue.type as TransactionType,
         category: formValue.category as any
-      });
+      };
+
+      this.transactionService.addTransaction(transactionData);
+      
+      if (formValue.isRecurring) {
+        this.transactionService.addRecurringTemplate(transactionData);
+      }
       
       // Reset form but keep type for convenience
       this.transactionForm.reset({
         title: '',
         amount: 0,
         type: formValue.type as TransactionType,
-        category: formValue.type === 'income' ? 'Ahorros' : 'Otros'
+        category: formValue.type === 'income' ? 'Ahorros' : 'Otros',
+        isRecurring: false
       });
     }
   }

@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Transaction, TransactionType } from '../models/transaction.model';
+import { Transaction, TransactionType, RecurringTemplate } from '../models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -134,12 +134,71 @@ export class TransactionService {
     this.initialBalance.set(targetOpening - netBeforeMonth);
   }
 
+  private recurrings = signal<RecurringTemplate[]>([]);
+
+  addRecurringTemplate(template: Omit<RecurringTemplate, 'id' | 'lastGenerated' | 'generatedMonths'>) {
+    const newTemplate: RecurringTemplate = {
+      ...template,
+      id: crypto.randomUUID(),
+      lastGenerated: new Date(),
+      generatedMonths: []
+    };
+    this.recurrings.update(list => [...list, newTemplate]);
+    this.checkAndGenerateRecurring(this.selectedMonth()); // Check immediately for current month
+  }
+
+  private checkAndGenerateRecurring(month: Date) {
+    const monthKey = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, '0')}`;
+    
+    let transactionsToAdd: Transaction[] = [];
+    let templatesUpdated = false;
+
+    const updatedTemplates = this.recurrings().map(template => {
+      if (!template.generatedMonths.includes(monthKey)) {
+        // Generate transaction
+        const newTransaction: Transaction = {
+          id: crypto.randomUUID(),
+          title: template.title,
+          amount: template.amount,
+          type: template.type,
+          category: template.category,
+          date: new Date(month.getFullYear(), month.getMonth(), 1) // 1st of the month
+        };
+        transactionsToAdd.push(newTransaction);
+        
+        // Mark as generated
+        templatesUpdated = true;
+        return {
+          ...template,
+          generatedMonths: [...template.generatedMonths, monthKey],
+          lastGenerated: new Date()
+        };
+      }
+      return template;
+    });
+
+    if (templatesUpdated) {
+      this.recurrings.set(updatedTemplates);
+      if (transactionsToAdd.length > 0) {
+        this.transactions.update(current => [...transactionsToAdd, ...current]);
+      }
+    }
+  }
+
   // Navigation methods
   nextMonth() {
-    this.selectedMonth.update(d => new Date(d.getFullYear(), d.getMonth() + 1, 1));
+    this.selectedMonth.update(d => {
+      const newDate = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      this.checkAndGenerateRecurring(newDate);
+      return newDate;
+    });
   }
 
   prevMonth() {
-    this.selectedMonth.update(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));
+    this.selectedMonth.update(d => {
+      const newDate = new Date(d.getFullYear(), d.getMonth() - 1, 1);
+      this.checkAndGenerateRecurring(newDate);
+      return newDate;
+    });
   }
 }

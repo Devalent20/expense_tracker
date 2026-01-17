@@ -14,6 +14,16 @@ export interface Transaction {
   category: TransactionCategory;
 }
 
+export interface RecurringTemplate {
+  id: string;
+  title: string;
+  amount: number;
+  type: TransactionType;
+  category: TransactionCategory;
+  lastGenerated: Date;
+  generatedMonths: string[]; // keys like "2026-01"
+}
+
 export const CategoryIcons: Record<TransactionCategory, string> = {
   'Juegos': '🎮',
   'Comidas': '🍔',
