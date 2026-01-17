@@ -24,9 +24,22 @@
     </div>
     
     <div class="right-column">
-      <app-transaction-list (viewDetails)="setViewMode('grid')"></app-transaction-list>
+      <app-transaction-list 
+        (viewDetails)="setViewMode('grid')"
+        (select)="selectTransaction($event)">
+      </app-transaction-list>
     </div>
   </main>
 
-  <app-transactions-grid *ngIf="viewMode === 'grid'" (close)="setViewMode('dashboard')"></app-transactions-grid>
+  <app-transactions-grid 
+    *ngIf="viewMode === 'grid'" 
+    (close)="setViewMode('dashboard')"
+    (select)="selectTransaction($event)">
+  </app-transactions-grid>
+
+  <app-transaction-detail 
+    *ngIf="selectedTransaction" 
+    [transaction]="selectedTransaction"
+    (close)="selectTransaction(null)">
+  </app-transaction-detail>
 </div>

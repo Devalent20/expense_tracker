@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, Output, EventEmitter } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
-import { ExpenseCategory, IncomeCategory, CategoryIcons, TransactionCategory } from '../../models/transaction.model';
+import { ExpenseCategory, IncomeCategory, CategoryIcons, TransactionCategory, Transaction } from '../../models/transaction.model';
 
 @Component({
   selector: 'app-transaction-list',
@@ -15,6 +15,7 @@ export class TransactionListComponent {
   private transactionService = inject(TransactionService);
   
   @Output() viewDetails = new EventEmitter<void>();
+  @Output() select = new EventEmitter<Transaction>();
 
   monthlyTransactions = this.transactionService.monthlyTransactions;
   categoryFilter = signal<string>('');
@@ -22,6 +23,12 @@ export class TransactionListComponent {
   icons = CategoryIcons;
 
   allCategories: TransactionCategory[] = ['Juegos', 'Comidas', 'Compras', 'Viajes', 'Suscripciones', 'Regalos', 'Otros', 'Ahorros', 'Nómina', 'Bizum'].sort() as TransactionCategory[];
+
+  // No local editing state needed anymore
+  
+  onSelect(transaction: Transaction) {
+    this.select.emit(transaction);
+  }
 
   filteredTransactions = computed(() => {
     const filter = this.categoryFilter();

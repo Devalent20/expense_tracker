@@ -240,3 +240,11 @@
   color: #64748b;
   font-style: italic;
 }
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover td {
+  background: #1e293b !important;
+}

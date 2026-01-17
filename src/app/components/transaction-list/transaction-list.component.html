@@ -15,7 +15,9 @@
       <p>No hay movimientos registrados.</p>
     </div>
 
-    <div *ngFor="let transaction of filteredTransactions()" class="transaction-item">
+    <div *ngFor="let transaction of filteredTransactions()" 
+         class="transaction-item" 
+         (click)="onSelect(transaction)">
       <div class="transaction-icon" [class.income]="transaction.type === 'income'" [class.expense]="transaction.type === 'expense'">
         {{ icons[transaction.category] }}
       </div>
@@ -28,12 +30,17 @@
           </span>
         </div>
         <div class="transaction-meta">
-          <span class="transaction-category">{{ transaction.category }}</span>
-          <span class="transaction-date">{{ transaction.date | date:'mediumDate' }}</span>
+          <div class="meta-info">
+            <span class="transaction-category">{{ transaction.category }}</span>
+            <span class="transaction-date">{{ transaction.date | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="comment-preview" *ngIf="transaction.comment">
+            {{ transaction.comment }}
+          </div>
         </div>
       </div>
 
-      <button class="delete-btn" (click)="deleteTransaction(transaction.id)" title="Eliminar">
+      <button class="delete-btn" (click)="$event.stopPropagation(); deleteTransaction(transaction.id)" title="Eliminar">
         ×
       </button>
     </div>

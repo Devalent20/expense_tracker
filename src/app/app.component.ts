@@ -7,11 +7,13 @@ import { TransactionListComponent } from './components/transaction-list/transact
 import { MonthSelectorComponent } from './components/month-selector/month-selector.component';
 import { RecurringListComponent } from './components/recurring-list/recurring-list.component';
 import { TransactionsGridComponent } from './components/transactions-grid/transactions-grid.component';
+import { TransactionDetailComponent } from './components/transaction-detail/transaction-detail.component';
+import { Transaction } from './models/transaction.model';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, BalanceCardComponent, AddTransactionComponent, TransactionListComponent, MonthSelectorComponent, RecurringListComponent, TransactionsGridComponent],
+  imports: [CommonModule, RouterOutlet, BalanceCardComponent, AddTransactionComponent, TransactionListComponent, MonthSelectorComponent, RecurringListComponent, TransactionsGridComponent, TransactionDetailComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -19,6 +21,7 @@ export class AppComponent {
   title = 'expense-tracker';
   showRecurring = false;
   viewMode: 'dashboard' | 'grid' = 'dashboard';
+  selectedTransaction: Transaction | null = null;
 
   toggleRecurring() {
     this.showRecurring = !this.showRecurring;
@@ -26,5 +29,9 @@ export class AppComponent {
 
   setViewMode(mode: 'dashboard' | 'grid') {
     this.viewMode = mode;
+  }
+
+  selectTransaction(transaction: Transaction | null) {
+    this.selectedTransaction = transaction;
   }
 }

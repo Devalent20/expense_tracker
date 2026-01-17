@@ -1,0 +1,57 @@
+<div class="sidebar-overlay" (click)="onCancel()">
+  <div class="sidebar-panel" (click)="$event.stopPropagation()">
+    <div class="sidebar-header">
+      <h3>Detalle del Movimiento</h3>
+      <button class="close-x" (click)="onCancel()">✕</button>
+    </div>
+
+    <form [formGroup]="detailForm" (ngSubmit)="onSave()" class="sidebar-form">
+      <div class="form-group">
+        <label for="detail-title">Título</label>
+        <input id="detail-title" type="text" formControlName="title">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="detail-amount">Importe (€)</label>
+          <input id="detail-amount" type="number" formControlName="amount" step="0.01">
+        </div>
+        <div class="form-group">
+          <label for="detail-date">Fecha</label>
+          <input id="detail-date" type="date" formControlName="date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo</label>
+        <div class="type-toggle">
+          <label [class.active]="detailForm.get('type')?.value === 'expense'">
+            <input type="radio" formControlName="type" value="expense"> Gasto
+          </label>
+          <label [class.active]="detailForm.get('type')?.value === 'income'">
+            <input type="radio" formControlName="type" value="income"> Ingreso
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="detail-category">Categoría</label>
+        <select id="detail-category" formControlName="category">
+          <option *ngFor="let cat of currentCategories" [value]="cat">
+            {{ icons[cat] }} {{ cat }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="detail-comment">Notas / Comentarios</label>
+        <textarea id="detail-comment" formControlName="comment" rows="4" placeholder="Añade una descripción..."></textarea>
+      </div>
+
+      <div class="sidebar-actions">
+        <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="detailForm.invalid">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>

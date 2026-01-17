@@ -21,7 +21,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let t of monthlyTransactions()" [class.income-row]="t.type === 'income'" [class.expense-row]="t.type === 'expense'">
+          <tr *ngFor="let t of monthlyTransactions()" 
+              [class.income-row]="t.type === 'income'" 
+              [class.expense-row]="t.type === 'expense'"
+              (click)="onSelect(t)"
+              class="clickable-row">
             <td class="date-col">{{ t.date | date:'dd/MM/yyyy' }}</td>
             <td class="title-col">
               <div class="title-content">
@@ -35,29 +39,15 @@
               </span>
             </td>
             <td class="comment-col">
-              <div *ngIf="editingId() !== t.id" class="comment-display" (click)="startEdit(t)" title="Click para editar">
+              <div class="comment-display">
                 {{ t.comment || '---' }}
-                <span class="edit-hint">✏️</span>
-              </div>
-              <div *ngIf="editingId() === t.id" class="comment-edit">
-                <input 
-                  type="text" 
-                  [(ngModel)]="editValue" 
-                  (keyup.enter)="saveEdit(t)" 
-                  (keyup.escape)="cancelEdit()"
-                  focus
-                  placeholder="Añadir nota...">
-                <div class="edit-actions">
-                  <button (click)="saveEdit(t)" class="save-btn">✅</button>
-                  <button (click)="cancelEdit()" class="cancel-btn">❌</button>
-                </div>
               </div>
             </td>
             <td class="amount-col text-right" [class.positive]="t.type === 'income'" [class.negative]="t.type === 'expense'">
               {{ t.type === 'income' ? '+' : '-' }}{{ t.amount | currency:'EUR' }}
             </td>
             <td class="actions-col text-center">
-              <button class="delete-row-btn" (click)="deleteTransaction(t.id)">🗑️</button>
+              <button class="delete-row-btn" (click)="$event.stopPropagation(); deleteTransaction(t.id)">🗑️</button>
             </td>
           </tr>
           <tr *ngIf="monthlyTransactions().length === 0">

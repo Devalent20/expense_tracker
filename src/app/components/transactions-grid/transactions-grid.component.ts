@@ -15,6 +15,7 @@ export class TransactionsGridComponent {
   private transactionService = inject(TransactionService);
   
   @Output() close = new EventEmitter<void>();
+  @Output() select = new EventEmitter<Transaction>();
 
   monthlyTransactions = this.transactionService.monthlyTransactions;
   selectedMonth = this.transactionService.selectedMonth;
@@ -22,22 +23,8 @@ export class TransactionsGridComponent {
   
   icons = CategoryIcons;
 
-  // Editing state
-  editingId = signal<string | null>(null);
-  editValue = signal<string>('');
-
-  startEdit(transaction: Transaction) {
-    this.editingId.set(transaction.id);
-    this.editValue.set(transaction.comment || '');
-  }
-
-  saveEdit(transaction: Transaction) {
-    this.transactionService.updateTransaction(transaction.id, { comment: this.editValue() });
-    this.editingId.set(null);
-  }
-
-  cancelEdit() {
-    this.editingId.set(null);
+  onSelect(transaction: Transaction) {
+    this.select.emit(transaction);
   }
 
   onClose() {
