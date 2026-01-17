@@ -19,10 +19,10 @@ export class TransactionsGridComponent {
   @Output() close = new EventEmitter<void>();
   @Output() select = new EventEmitter<Transaction>();
 
-  onExport() {
+  async onExport() {
     const monthStr = this.selectedMonth().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
     const fileName = `Transacciones_${this.selectedAccount()}_${monthStr}.xlsx`;
-    this.exportService.exportTransactionsToExcel(this.monthlyTransactions(), fileName);
+    await this.exportService.exportTransactionsToExcel(this.monthlyTransactions(), fileName, monthStr);
   }
 
   monthlyTransactions = this.transactionService.monthlyTransactions;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as XLSX from 'xlsx';
+import * as ExcelJS from 'exceljs';
 import { Transaction } from '../models/transaction.model';
 import { formatDate } from '@angular/common';
 
@@ -8,40 +8,85 @@ import { formatDate } from '@angular/common';
 })
 export class ExportService {
 
-  exportTransactionsToExcel(transactions: Transaction[], fileName: string = 'Transacciones.xlsx') {
+  async exportTransactionsToExcel(transactions: Transaction[], fileName: string = 'Transacciones.xlsx', sheetName: string = 'Resumen') {
     if (transactions.length === 0) return;
 
-    // Transform data for Excel
-    const data = transactions.map(t => ({
-      Fecha: formatDate(t.date, 'dd/MM/yyyy', 'en-US'),
-      Concepto: t.title,
-      Categoría: t.category,
-      Tipo: t.type === 'income' ? 'Ingreso' : 'Gasto',
-      Importe: t.amount,
-      Cuenta: t.accountId === 'sabadell' ? 'Sabadell' : 'N26',
-      Notas: t.comment || ''
-    }));
+    const workbook = new ExcelJS.Workbook();
+    // Sheet name must not exceed 31 characters
+    const safeSheetName = sheetName.substring(0, 31);
+    const worksheet = workbook.addWorksheet(safeSheetName);
 
-    // Create worksheet
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    // Prepare rows
+    const rows = transactions.map(t => [
+      formatDate(t.date, 'dd/MM/yyyy', 'en-US'),
+      t.title,
+      t.amount,
+      t.category,
+      t.type === 'income' ? 'Ingreso' : 'Gasto',
+      t.accountId === 'sabadell' ? 'Sabadell' : 'N26',
+      t.comment || ''
+    ]);
 
-    // Set column widths (approximate characters)
-    const wscols = [
-      { wch: 12 }, // Fecha
-      { wch: 30 }, // Concepto
-      { wch: 15 }, // Categoría
-      { wch: 10 }, // Tipo
-      { wch: 12 }, // Importe
-      { wch: 10 }, // Cuenta
-      { wch: 40 }, // Notas
+    // Add Table
+    worksheet.addTable({
+      name: 'Transacciones',
+      ref: 'A1',
+      headerRow: true,
+      style: {
+        theme: 'TableStyleMedium2', // Nice blue theme similar to user's second image
+        showRowStripes: true,
+      },
+      columns: [
+        { name: 'Fecha', filterButton: false },
+        { name: 'Concepto', filterButton: true },
+        { name: 'Importe', filterButton: false },
+        { name: 'Categoría', filterButton: true },
+        { name: 'Tipo', filterButton: true },
+        { name: 'Cuenta', filterButton: true },
+        { name: 'Notas', filterButton: true },
+      ],
+      rows: rows,
+    });
+
+    // Set Column Widths (addTable doesn't set widths)
+    worksheet.columns = [
+      { width: 15 }, // Fecha
+      { width: 25 }, // Concepto
+      { width: 15 }, // Importe
+      { width: 18 }, // Categoría
+      { width: 12 }, // Tipo
+      { width: 12 }, // Cuenta
+      { width: 40 }  // Notas
     ];
-    ws['!cols'] = wscols;
 
-    // Create workbook and append worksheet
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
+    // Apply Currency Format to Amount Column (Column C)
+    worksheet.getColumn('C').numFmt = '#,##0.00" €"';
+    worksheet.getColumn('C').alignment = { horizontal: 'left' };
 
-    // Export file
-    XLSX.writeFile(wb, fileName);
+    // Format Date Column alignment
+    worksheet.getColumn('A').alignment = { horizontal: 'center' };
+
+    // Center all header titles
+    worksheet.getRow(1).alignment = { horizontal: 'center', vertical: 'middle' };
+
+    // Generate Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    this.saveAsExcelFile(buffer, fileName);
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+    
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(data);
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      link.remove();
+    }, 100);
   }
 }

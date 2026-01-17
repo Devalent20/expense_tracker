@@ -19,11 +19,13 @@ export class TransactionListComponent {
   @Output() viewDetails = new EventEmitter<void>();
   @Output() select = new EventEmitter<Transaction>();
 
-  onExport() {
-    this.exportService.exportTransactionsToExcel(this.filteredTransactions(), 'Resumen_Movimientos.xlsx');
+  async onExport() {
+    const monthStr = this.selectedMonth().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+    await this.exportService.exportTransactionsToExcel(this.filteredTransactions(), 'Resumen_Movimientos.xlsx', monthStr);
   }
 
   monthlyTransactions = this.transactionService.monthlyTransactions;
+  selectedMonth = this.transactionService.selectedMonth;
   categoryFilter = signal<string>('');
   
   icons = CategoryIcons;
