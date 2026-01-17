@@ -42,6 +42,18 @@ export class AddTransactionComponent {
       : this.expenseCategories;
   }
 
+  increment() {
+    const current = this.transactionForm.get('amount')?.value || 0;
+    this.transactionForm.patchValue({ amount: current + 1 });
+  }
+
+  decrement() {
+    const current = this.transactionForm.get('amount')?.value || 0;
+    if (current > 0) {
+      this.transactionForm.patchValue({ amount: Math.max(0, current - 1) });
+    }
+  }
+
   onSubmit() {
     if (this.transactionForm.valid) {
       const formValue = this.transactionForm.value;
