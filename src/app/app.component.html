@@ -1,7 +1,20 @@
 <div class="app-container">
   <header class="app-header">
     <h1>Expense Tracker</h1>
+    <button class="manage-subs-btn" (click)="toggleRecurring()">
+      Gestionar Suscripciones
+    </button>
   </header>
+
+  <div class="overlay" *ngIf="showRecurring" (click)="toggleRecurring()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Suscripciones</h2>
+        <button class="close-btn" (click)="toggleRecurring()">✕</button>
+      </div>
+      <app-recurring-list></app-recurring-list>
+    </div>
+  </div>
 
   <main class="dashboard-grid">
     <div class="left-column">

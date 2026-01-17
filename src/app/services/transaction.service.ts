@@ -163,6 +163,15 @@ export class TransactionService {
 
   private recurrings = signal<RecurringTemplate[]>([]);
 
+  readonly recurringTemplates = computed(() => {
+    const account = this.selectedAccount();
+    return this.recurrings().filter(t => t.accountId === account);
+  });
+
+  deleteRecurringTemplate(id: string) {
+    this.recurrings.update(list => list.filter(t => t.id !== id));
+  }
+
   addRecurringTemplate(template: Omit<RecurringTemplate, 'id' | 'lastGenerated' | 'generatedMonths' | 'accountId'> & { accountId?: BankAccount }) {
     const newTemplate: RecurringTemplate = {
       ...template,

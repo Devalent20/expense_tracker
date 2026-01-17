@@ -1,0 +1,32 @@
+<div class="recurring-list-container" *ngIf="recurringTemplates().length > 0; else noSubs">
+  <h3>Suscripciones Activas</h3>
+  <div class="list">
+    <div class="recurring-item" *ngFor="let template of recurringTemplates()">
+      <div class="icon">{{ icons[template.category] }}</div>
+      <div class="details">
+        <div class="title">{{ template.title }}</div>
+        <div class="amount">{{ template.amount | currency:'EUR' }} / mes</div>
+      </div>
+      <button class="delete-btn" (click)="initiateDelete(template.id)" title="Cancelar suscripción">
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Dialog -->
+  <div class="confirmation-overlay" *ngIf="confirmDeleteId">
+    <div class="confirmation-card">
+      <div class="warning-icon">⚠️</div>
+      <p>¿Estás seguro de que quieres cancelar esta suscripción? No se generarán más transacciones en el futuro.</p>
+      <div class="actions">
+        <button class="btn btn-confirm" (click)="confirmDelete()">Sí, cancelar</button>
+        <button class="btn btn-cancel" (click)="cancelDelete()">Mantener</button>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #noSubs>
+  <div class="empty-state">
+    <p>No tienes suscripciones activas en esta cuenta.</p>
+  </div>
+</ng-template>
