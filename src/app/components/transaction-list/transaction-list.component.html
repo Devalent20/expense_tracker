@@ -2,7 +2,10 @@
   <div class="header-row">
     <div class="title-group">
       <h3 class="title">Movimientos</h3>
-      <button class="details-link" (click)="onViewDetails()">🔍 Ver detalles</button>
+      <div class="header-actions">
+        <button class="details-link" (click)="onViewDetails()">🔍 Ver detalles</button>
+        <button class="export-link" (click)="onExport()">📥 Exportar</button>
+      </div>
     </div>
     <select [(ngModel)]="categoryFilter" class="category-filter">
       <option value="">Todas</option>

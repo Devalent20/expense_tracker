@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, Output, EventEmitter } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
+import { ExportService } from '../../services/export.service';
 import { CategoryIcons, Transaction } from '../../models/transaction.model';
 
 @Component({
@@ -13,9 +14,16 @@ import { CategoryIcons, Transaction } from '../../models/transaction.model';
 })
 export class TransactionsGridComponent {
   private transactionService = inject(TransactionService);
+  private exportService = inject(ExportService);
   
   @Output() close = new EventEmitter<void>();
   @Output() select = new EventEmitter<Transaction>();
+
+  onExport() {
+    const monthStr = this.selectedMonth().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+    const fileName = `Transacciones_${this.selectedAccount()}_${monthStr}.xlsx`;
+    this.exportService.exportTransactionsToExcel(this.monthlyTransactions(), fileName);
+  }
 
   monthlyTransactions = this.transactionService.monthlyTransactions;
   selectedMonth = this.transactionService.selectedMonth;

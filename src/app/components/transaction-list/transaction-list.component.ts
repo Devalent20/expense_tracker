@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, Output, EventEmitter } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
+import { ExportService } from '../../services/export.service';
 import { ExpenseCategory, IncomeCategory, CategoryIcons, TransactionCategory, Transaction } from '../../models/transaction.model';
 
 @Component({
@@ -13,9 +14,14 @@ import { ExpenseCategory, IncomeCategory, CategoryIcons, TransactionCategory, Tr
 })
 export class TransactionListComponent {
   private transactionService = inject(TransactionService);
+  private exportService = inject(ExportService);
   
   @Output() viewDetails = new EventEmitter<void>();
   @Output() select = new EventEmitter<Transaction>();
+
+  onExport() {
+    this.exportService.exportTransactionsToExcel(this.filteredTransactions(), 'Resumen_Movimientos.xlsx');
+  }
 
   monthlyTransactions = this.transactionService.monthlyTransactions;
   categoryFilter = signal<string>('');

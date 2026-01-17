@@ -5,7 +5,10 @@
         <h2>Detalle de Movimientos</h2>
         <span class="subtitle">{{ selectedMonth() | date:'MMMM yyyy' }} - {{ selectedAccount() | uppercase }}</span>
       </div>
-      <button class="close-btn" (click)="onClose()">Volver al Dashboard</button>
+      <div class="header-actions">
+        <button class="export-btn" (click)="onExport()">📥 Exportar a Excel</button>
+        <button class="close-btn" (click)="onClose()">Volver al Dashboard</button>
+      </div>
     </div>
 
     <div class="table-container">
