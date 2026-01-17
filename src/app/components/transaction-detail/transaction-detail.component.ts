@@ -79,4 +79,23 @@ export class TransactionDetailComponent implements OnChanges {
   onCancel() {
     this.close.emit();
   }
+
+  // Deletion confirmation state
+  showConfirm = false;
+
+  onDelete() {
+    this.showConfirm = true;
+  }
+
+  cancelDelete() {
+    this.showConfirm = false;
+  }
+
+  executeDelete() {
+    if (this.transaction) {
+      this.transactionService.deleteTransaction(this.transaction.id);
+      this.showConfirm = false;
+      this.close.emit();
+    }
+  }
 }

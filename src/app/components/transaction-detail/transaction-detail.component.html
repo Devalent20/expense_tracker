@@ -49,9 +49,25 @@
       </div>
 
       <div class="sidebar-actions">
-        <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="detailForm.invalid">Guardar cambios</button>
+        <button type="button" class="btn-delete" (click)="onDelete()">Eliminar</button>
+        <div class="main-actions">
+          <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="detailForm.invalid">Guardar</button>
+        </div>
       </div>
     </form>
+  </div>
+
+  <!-- Deletion Confirmation Modal -->
+  <div class="confirm-overlay" *ngIf="showConfirm" (click)="cancelDelete()">
+    <div class="confirm-modal" (click)="$event.stopPropagation()">
+      <div class="confirm-icon">⚠️</div>
+      <h4>¿Eliminar movimiento?</h4>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn-confirm" (click)="executeDelete()">Eliminar</button>
+      </div>
+    </div>
   </div>
 </div>

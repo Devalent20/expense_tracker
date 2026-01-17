@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <button class="delete-btn" (click)="$event.stopPropagation(); deleteTransaction(transaction.id)" title="Eliminar">
+      <button class="delete-btn" (click)="confirmDelete(transaction.id, $event)" title="Eliminar">
         ×
       </button>
     </div>
@@ -50,5 +50,18 @@
     <button class="reset-app-btn" (click)="clearAllData()">
       ⚠️ Resetear Aplicación
     </button>
+  </div>
+
+  <!-- Deletion Confirmation Modal -->
+  <div class="confirm-overlay" *ngIf="transactionToDelete()" (click)="cancelDelete()">
+    <div class="confirm-modal" (click)="$event.stopPropagation()">
+      <div class="confirm-icon">⚠️</div>
+      <h4>¿Eliminar movimiento?</h4>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn-confirm" (click)="executeDelete()">Eliminar</button>
+      </div>
+    </div>
   </div>
 </div>

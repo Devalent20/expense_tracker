@@ -27,13 +27,31 @@ export class TransactionsGridComponent {
     this.select.emit(transaction);
   }
 
+  // Deletion confirmation state
+  transactionToDelete = signal<string | null>(null);
+
+  confirmDelete(id: string, event: Event) {
+    event.stopPropagation();
+    this.transactionToDelete.set(id);
+  }
+
+  cancelDelete() {
+    this.transactionToDelete.set(null);
+  }
+
+  executeDelete() {
+    const id = this.transactionToDelete();
+    if (id) {
+      this.transactionService.deleteTransaction(id);
+      this.transactionToDelete.set(null);
+    }
+  }
+
   onClose() {
     this.close.emit();
   }
 
   deleteTransaction(id: string) {
-    if (confirm('¿Eliminar esta transacción?')) {
-      this.transactionService.deleteTransaction(id);
-    }
+    // This is now handled by confirmDelete -> executeDelete
   }
 }

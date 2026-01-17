@@ -47,7 +47,7 @@
               {{ t.type === 'income' ? '+' : '-' }}{{ t.amount | currency:'EUR' }}
             </td>
             <td class="actions-col text-center">
-              <button class="delete-row-btn" (click)="$event.stopPropagation(); deleteTransaction(t.id)">🗑️</button>
+              <button class="delete-row-btn" (click)="confirmDelete(t.id, $event)">🗑️</button>
             </td>
           </tr>
           <tr *ngIf="monthlyTransactions().length === 0">
@@ -55,6 +55,19 @@
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- Deletion Confirmation Modal -->
+  <div class="confirm-overlay" *ngIf="transactionToDelete()" (click)="cancelDelete()">
+    <div class="confirm-modal" (click)="$event.stopPropagation()">
+      <div class="confirm-icon">⚠️</div>
+      <h4>¿Eliminar movimiento?</h4>
+      <p>Esta acción no se puede deshacer.</p>
+      <div class="confirm-actions">
+        <button class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="btn-confirm" (click)="executeDelete()">Eliminar</button>
+      </div>
     </div>
   </div>
 </div>
