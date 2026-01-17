@@ -5,6 +5,8 @@ export type IncomeCategory = 'Ahorros' | 'Nómina' | 'Bizum';
 
 export type TransactionCategory = ExpenseCategory | IncomeCategory;
 
+export type BankAccount = 'sabadell' | 'n26';
+
 export interface Transaction {
   id: string;
   title: string;
@@ -12,6 +14,7 @@ export interface Transaction {
   type: TransactionType;
   date: Date;
   category: TransactionCategory;
+  accountId: BankAccount;
 }
 
 export interface RecurringTemplate {
@@ -20,6 +23,7 @@ export interface RecurringTemplate {
   amount: number;
   type: TransactionType;
   category: TransactionCategory;
+  accountId: BankAccount;
   lastGenerated: Date;
   generatedMonths: string[]; // keys like "2026-01"
 }

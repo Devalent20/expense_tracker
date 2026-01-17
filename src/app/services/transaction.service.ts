@@ -1,10 +1,16 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Transaction, TransactionType, RecurringTemplate } from '../models/transaction.model';
+import { Transaction, TransactionType, RecurringTemplate, BankAccount } from '../models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
+  readonly selectedAccount = signal<BankAccount>('sabadell');
+
+  setSelectedAccount(account: BankAccount) {
+    this.selectedAccount.set(account);
+  }
+
   private transactions = signal<Transaction[]>([
     {
       id: '1',
@@ -12,7 +18,8 @@ export class TransactionService {
       amount: 2500,
       type: 'income',
       date: new Date(),
-      category: 'Nómina'
+      category: 'Nómina',
+      accountId: 'sabadell'
     },
     {
       id: '2',
@@ -20,7 +27,8 @@ export class TransactionService {
       amount: 150,
       type: 'expense',
       date: new Date(),
-      category: 'Comidas'
+      category: 'Comidas',
+      accountId: 'sabadell'
     },
     {
       id: '3',
@@ -28,7 +36,8 @@ export class TransactionService {
       amount: 60,
       type: 'expense',
       date: new Date(),
-      category: 'Comidas'
+      category: 'Comidas',
+      accountId: 'sabadell'
     },
     {
       id: '4',
@@ -36,7 +45,8 @@ export class TransactionService {
       amount: 45,
       type: 'expense',
       date: new Date(),
-      category: 'Juegos'
+      category: 'Juegos',
+      accountId: 'n26'
     },
     // Mock data for previous month to test logic
     {
@@ -45,30 +55,39 @@ export class TransactionService {
       amount: 100,
       type: 'expense',
       date: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-      category: 'Otros'
+      category: 'Otros',
+      accountId: 'sabadell'
     }
   ]);
 
-  private initialBalance = signal<number>(1000);
+  private initialBalances = signal<Record<BankAccount, number>>({
+    sabadell: 1000,
+    n26: 0
+  });
   
   // State for selected month (defaults to 1st of current month)
   readonly selectedMonth = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
 
   readonly allTransactions = this.transactions.asReadonly();
 
-  // Filter transactions for the selected month
+  // Filter transactions for the selected month and account
   readonly monthlyTransactions = computed(() => {
     const selected = this.selectedMonth();
+    const account = this.selectedAccount();
     return this.transactions().filter(t => 
+      t.accountId === account &&
       t.date.getMonth() === selected.getMonth() && 
       t.date.getFullYear() === selected.getFullYear()
     ).sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort new to old
   });
 
-  // Calculate opening balance (Initial + all transactions BEFORE this month)
+  // Calculate opening balance (Initial + all transactions BEFORE this month for selected account)
   readonly openingBalance = computed(() => {
     const selected = this.selectedMonth();
+    const account = this.selectedAccount();
+    
     const previousTransactions = this.transactions().filter(t => 
+      t.accountId === account &&
       t.date < selected
     );
 
@@ -76,7 +95,7 @@ export class TransactionService {
       t.type === 'income' ? acc + t.amount : acc - t.amount, 0
     );
 
-    return this.initialBalance() + prevNet;
+    return this.initialBalances()[account] + prevNet;
   });
 
   // Net result of the specific month
@@ -91,10 +110,13 @@ export class TransactionService {
     this.openingBalance() + this.monthlyNet()
   );
 
-  // Global Total (kept for reference or if we want to show it somewhere)
-  readonly totalBalance = computed(() => 
-    this.initialBalance() + this.transactions().reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0)
-  );
+  // Global Total for selected account
+  readonly totalBalance = computed(() => {
+    const account = this.selectedAccount();
+    return this.initialBalances()[account] + this.transactions()
+      .filter(t => t.accountId === account)
+      .reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
+  });
 
   readonly totalIncome = computed(() => 
     this.monthlyTransactions()
@@ -108,12 +130,13 @@ export class TransactionService {
       .reduce((acc, t) => acc + t.amount, 0)
   );
 
-  addTransaction(transaction: Omit<Transaction, 'id' | 'date'>) {
+  addTransaction(transaction: Omit<Transaction, 'id' | 'date' | 'accountId'> & { accountId?: BankAccount }) {
     const newTransaction: Transaction = {
       ...transaction,
       id: crypto.randomUUID(),
       // Use current date if in current month, otherwise 1st of selected month (simulation)
-      date: new Date() 
+      date: new Date(),
+      accountId: transaction.accountId || this.selectedAccount()
     };
     this.transactions.update(items => [newTransaction, ...items]);
   }
@@ -124,24 +147,29 @@ export class TransactionService {
 
   updateOpeningBalance(targetOpening: number) {
     const selected = this.selectedMonth();
+    const account = this.selectedAccount();
     
     // Calculate net of all transactions BEFORE the selected month
     const netBeforeMonth = this.transactions()
-      .filter(t => t.date < selected)
+      .filter(t => t.accountId === account && t.date < selected)
       .reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
 
     // initial + netBefore = targetOpening  =>  initial = targetOpening - netBefore
-    this.initialBalance.set(targetOpening - netBeforeMonth);
+    this.initialBalances.update(balances => ({
+      ...balances, 
+      [account]: targetOpening - netBeforeMonth
+    }));
   }
 
   private recurrings = signal<RecurringTemplate[]>([]);
 
-  addRecurringTemplate(template: Omit<RecurringTemplate, 'id' | 'lastGenerated' | 'generatedMonths'>) {
+  addRecurringTemplate(template: Omit<RecurringTemplate, 'id' | 'lastGenerated' | 'generatedMonths' | 'accountId'> & { accountId?: BankAccount }) {
     const newTemplate: RecurringTemplate = {
       ...template,
       id: crypto.randomUUID(),
       lastGenerated: new Date(),
-      generatedMonths: []
+      generatedMonths: [],
+      accountId: template.accountId || this.selectedAccount()
     };
     this.recurrings.update(list => [...list, newTemplate]);
     this.checkAndGenerateRecurring(this.selectedMonth()); // Check immediately for current month
@@ -162,7 +190,8 @@ export class TransactionService {
           amount: template.amount,
           type: template.type,
           category: template.category,
-          date: new Date(month.getFullYear(), month.getMonth(), 1) // 1st of the month
+          date: new Date(month.getFullYear(), month.getMonth(), 1), // 1st of the month
+          accountId: template.accountId
         };
         transactionsToAdd.push(newTransaction);
         

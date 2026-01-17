@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from '../../services/transaction.service';
+import { BankAccount } from '../../models/transaction.model';
 
 @Component({
   selector: 'app-balance-card',
@@ -12,9 +13,14 @@ import { TransactionService } from '../../services/transaction.service';
 export class BalanceCardComponent {
   private transactionService = inject(TransactionService);
 
+  selectedAccount = this.transactionService.selectedAccount;
   openingBalance = this.transactionService.openingBalance;
   closingBalance = this.transactionService.closingBalance;
   monthlyNet = this.transactionService.monthlyNet;
+
+  setAccount(account: BankAccount) {
+    this.transactionService.setSelectedAccount(account);
+  }
 
   isEditing = false;
 
