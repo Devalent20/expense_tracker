@@ -11,7 +11,7 @@ export class TransactionService {
     RECURRINGS: 'et_recurrings'
   };
 
-  readonly selectedAccount = signal<BankAccount>('sabadell');
+  readonly selectedAccount = signal<BankAccount>('n26');
 
   setSelectedAccount(account: BankAccount) {
     this.selectedAccount.set(account);
