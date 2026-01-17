@@ -186,3 +186,18 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+fieldset.form-group {
+  border: none;
+  padding: 0;
+  margin-inline: 0;
+}
+
+legend {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  width: 100%;
+}

@@ -1,9 +1,9 @@
-<div class="add-transaction-card">
-  <h3>Nueva Transacción</h3>
+<section class="add-transaction-card" aria-labelledby="add-transaction-title">
+  <h3 id="add-transaction-title">Nueva Transacción</h3>
   <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
     
-    <div class="form-group">
-      <label>Tipo</label>
+    <fieldset class="form-group type-fieldset">
+      <legend>Tipo</legend>
       <div class="type-selector">
         <label class="type-option" [class.selected]="transactionForm.get('type')?.value === 'expense'">
           <input type="radio" formControlName="type" value="expense">
@@ -14,7 +14,7 @@
           Ingreso
         </label>
       </div>
-    </div>
+    </fieldset>
 
     <div class="form-group">
       <label for="title">Título</label>
@@ -24,9 +24,9 @@
     <div class="form-group">
       <label for="amount">Cantidad (€)</label>
       <div class="input-group">
-        <button type="button" class="step-btn" (click)="decrement()">-</button>
+        <button type="button" class="step-btn" (click)="decrement()" aria-label="Disminuir cantidad">-</button>
         <input id="amount" type="number" formControlName="amount" min="0" step="0.01">
-        <button type="button" class="step-btn" (click)="increment()">+</button>
+        <button type="button" class="step-btn" (click)="increment()" aria-label="Aumentar cantidad">+</button>
       </div>
     </div>
 
@@ -46,4 +46,4 @@
 
     <button type="submit" [disabled]="transactionForm.invalid">Añadir</button>
   </form>
-</div>
+</section>
