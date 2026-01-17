@@ -33,4 +33,10 @@ export class TransactionListComponent {
   deleteTransaction(id: string) {
     this.transactionService.deleteTransaction(id);
   }
+
+  clearAllData() {
+    if (confirm('¿ESTÁS SEGURO? Se borrarán TODAS las transacciones, cuentas y suscripciones permanentemente.')) {
+      this.transactionService.clearAllData();
+    }
+  }
 }

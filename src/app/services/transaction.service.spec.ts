@@ -5,6 +5,7 @@ describe('TransactionService', () => {
   let service: TransactionService;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({});
     service = TestBed.inject(TransactionService);
   });

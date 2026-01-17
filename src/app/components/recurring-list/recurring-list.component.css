@@ -152,3 +152,30 @@ h3 {
   background: #dc2626;
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
+
+.footer-actions {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #334155;
+  display: flex;
+  justify-content: center;
+}
+
+.reset-btn {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.reset-btn:hover {
+  background: #ef4444;
+  color: white;
+  opacity: 1;
+}

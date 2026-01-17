@@ -151,3 +151,31 @@
 .delete-btn:hover {
   color: #ef4444;
 }
+
+.footer-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #334155;
+  display: flex;
+  justify-content: center;
+}
+
+.reset-app-btn {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.reset-app-btn:hover {
+  background: #ef4444;
+  color: white;
+  opacity: 1;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}

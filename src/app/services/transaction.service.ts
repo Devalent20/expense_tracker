@@ -1,70 +1,58 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, effect } from '@angular/core';
 import { Transaction, TransactionType, RecurringTemplate, BankAccount } from '../models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
+  private readonly STORAGE_KEYS = {
+    TRANSACTIONS: 'et_transactions',
+    BALANCES: 'et_initial_balances',
+    RECURRINGS: 'et_recurrings'
+  };
+
   readonly selectedAccount = signal<BankAccount>('sabadell');
 
   setSelectedAccount(account: BankAccount) {
     this.selectedAccount.set(account);
   }
 
-  private transactions = signal<Transaction[]>([
-    {
-      id: '1',
-      title: 'Salario Mensual',
-      amount: 2500,
-      type: 'income',
-      date: new Date(),
-      category: 'Nómina',
-      accountId: 'sabadell'
-    },
-    {
-      id: '2',
-      title: 'Compra Supermercado',
-      amount: 150,
-      type: 'expense',
-      date: new Date(),
-      category: 'Comidas',
-      accountId: 'sabadell'
-    },
-    {
-      id: '3',
-      title: 'Cena con amigos',
-      amount: 60,
-      type: 'expense',
-      date: new Date(),
-      category: 'Comidas',
-      accountId: 'sabadell'
-    },
-    {
-      id: '4',
-      title: 'Steam Sale',
-      amount: 45,
-      type: 'expense',
-      date: new Date(),
-      category: 'Juegos',
-      accountId: 'n26'
-    },
-    // Mock data for previous month to test logic
-    {
-      id: '5',
-      title: 'Pago Anterior',
-      amount: 100,
-      type: 'expense',
-      date: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-      category: 'Otros',
-      accountId: 'sabadell'
-    }
-  ]);
+  private transactions = signal<Transaction[]>(this.loadFromStorage(this.STORAGE_KEYS.TRANSACTIONS, this.getDefaultTransactions()));
+  private initialBalances = signal<Record<BankAccount, number>>(this.loadFromStorage(this.STORAGE_KEYS.BALANCES, { sabadell: 0, n26: 0 }));
+  private recurrings = signal<RecurringTemplate[]>(this.loadFromStorage(this.STORAGE_KEYS.RECURRINGS, []));
 
-  private initialBalances = signal<Record<BankAccount, number>>({
-    sabadell: 1000,
-    n26: 0
-  });
-  
+  constructor() {
+    // Auto-save effect
+    effect(() => {
+      localStorage.setItem(this.STORAGE_KEYS.TRANSACTIONS, JSON.stringify(this.transactions()));
+      localStorage.setItem(this.STORAGE_KEYS.BALANCES, JSON.stringify(this.initialBalances()));
+      localStorage.setItem(this.STORAGE_KEYS.RECURRINGS, JSON.stringify(this.recurrings()));
+    });
+  }
+
+  private loadFromStorage<T>(key: string, defaultValue: T): T {
+    const data = localStorage.getItem(key);
+    if (!data) return defaultValue;
+    
+    try {
+      const parsed = JSON.parse(data);
+      // Special handling for dates if needed
+      if (key === this.STORAGE_KEYS.TRANSACTIONS) {
+        return parsed.map((t: any) => ({ ...t, date: new Date(t.date) })) as unknown as T;
+      }
+      if (key === this.STORAGE_KEYS.RECURRINGS) {
+        return parsed.map((t: any) => ({ ...t, lastGenerated: new Date(t.lastGenerated) })) as unknown as T;
+      }
+      return parsed;
+    } catch {
+      return defaultValue;
+    }
+  }
+
+  private getDefaultTransactions(): Transaction[] {
+    return [];
+  }
+
   // State for selected month (defaults to 1st of current month)
   readonly selectedMonth = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
 
@@ -130,12 +118,11 @@ export class TransactionService {
       .reduce((acc, t) => acc + t.amount, 0)
   );
 
-  addTransaction(transaction: Omit<Transaction, 'id' | 'date' | 'accountId'> & { accountId?: BankAccount }) {
+  addTransaction(transaction: Omit<Transaction, 'id' | 'date' | 'accountId'> & { accountId?: BankAccount, date?: Date }) {
     const newTransaction: Transaction = {
       ...transaction,
       id: crypto.randomUUID(),
-      // Use current date if in current month, otherwise 1st of selected month (simulation)
-      date: new Date(),
+      date: transaction.date || new Date(),
       accountId: transaction.accountId || this.selectedAccount()
     };
     this.transactions.update(items => [newTransaction, ...items]);
@@ -149,19 +136,15 @@ export class TransactionService {
     const selected = this.selectedMonth();
     const account = this.selectedAccount();
     
-    // Calculate net of all transactions BEFORE the selected month
     const netBeforeMonth = this.transactions()
       .filter(t => t.accountId === account && t.date < selected)
       .reduce((acc, t) => t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
 
-    // initial + netBefore = targetOpening  =>  initial = targetOpening - netBefore
     this.initialBalances.update(balances => ({
       ...balances, 
       [account]: targetOpening - netBeforeMonth
     }));
   }
-
-  private recurrings = signal<RecurringTemplate[]>([]);
 
   readonly recurringTemplates = computed(() => {
     const account = this.selectedAccount();
@@ -181,7 +164,7 @@ export class TransactionService {
       accountId: template.accountId || this.selectedAccount()
     };
     this.recurrings.update(list => [...list, newTemplate]);
-    this.checkAndGenerateRecurring(this.selectedMonth()); // Check immediately for current month
+    this.checkAndGenerateRecurring(this.selectedMonth());
   }
 
   private checkAndGenerateRecurring(month: Date) {
@@ -192,19 +175,17 @@ export class TransactionService {
 
     const updatedTemplates = this.recurrings().map(template => {
       if (!template.generatedMonths.includes(monthKey)) {
-        // Generate transaction
         const newTransaction: Transaction = {
           id: crypto.randomUUID(),
           title: template.title,
           amount: template.amount,
           type: template.type,
           category: template.category,
-          date: new Date(month.getFullYear(), month.getMonth(), 1), // 1st of the month
+          date: new Date(month.getFullYear(), month.getMonth(), 1),
           accountId: template.accountId
         };
         transactionsToAdd.push(newTransaction);
         
-        // Mark as generated
         templatesUpdated = true;
         return {
           ...template,
@@ -223,7 +204,6 @@ export class TransactionService {
     }
   }
 
-  // Navigation methods
   nextMonth() {
     this.selectedMonth.update(d => {
       const newDate = new Date(d.getFullYear(), d.getMonth() + 1, 1);
@@ -238,5 +218,11 @@ export class TransactionService {
       this.checkAndGenerateRecurring(newDate);
       return newDate;
     });
+  }
+
+  // Debug/Maintenance
+  clearAllData() {
+    localStorage.clear();
+    location.reload();
   }
 }
