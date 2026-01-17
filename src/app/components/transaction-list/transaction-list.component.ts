@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../services/transaction.service';
@@ -14,6 +14,8 @@ import { ExpenseCategory, IncomeCategory, CategoryIcons, TransactionCategory } f
 export class TransactionListComponent {
   private transactionService = inject(TransactionService);
   
+  @Output() viewDetails = new EventEmitter<void>();
+
   monthlyTransactions = this.transactionService.monthlyTransactions;
   categoryFilter = signal<string>('');
   
@@ -38,5 +40,9 @@ export class TransactionListComponent {
     if (confirm('¿ESTÁS SEGURO? Se borrarán TODAS las transacciones, cuentas y suscripciones permanentemente.')) {
       this.transactionService.clearAllData();
     }
+  }
+
+  onViewDetails() {
+    this.viewDetails.emit();
   }
 }

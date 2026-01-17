@@ -179,3 +179,27 @@
   opacity: 1;
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
 }
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.details-link {
+  background: transparent;
+  border: none;
+  color: #60a5fa;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.details-link:hover {
+  background: #1e293b;
+  color: #93c5fd;
+  text-decoration: underline;
+}

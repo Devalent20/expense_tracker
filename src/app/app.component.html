@@ -16,7 +16,7 @@
     </div>
   </div>
 
-  <main class="dashboard-grid">
+  <main class="dashboard-grid" *ngIf="viewMode === 'dashboard'">
     <div class="left-column">
       <app-month-selector></app-month-selector>
       <app-balance-card></app-balance-card>
@@ -24,7 +24,9 @@
     </div>
     
     <div class="right-column">
-      <app-transaction-list></app-transaction-list>
+      <app-transaction-list (viewDetails)="setViewMode('grid')"></app-transaction-list>
     </div>
   </main>
+
+  <app-transactions-grid *ngIf="viewMode === 'grid'" (close)="setViewMode('dashboard')"></app-transactions-grid>
 </div>

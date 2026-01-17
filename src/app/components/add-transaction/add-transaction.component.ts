@@ -21,6 +21,7 @@ export class AddTransactionComponent {
     type: ['expense' as TransactionType, Validators.required],
     category: ['Otros', Validators.required],
     date: [new Date().toISOString().split('T')[0], Validators.required],
+    comment: [''],
     isRecurring: [false]
   });
 
@@ -78,14 +79,15 @@ export class AddTransactionComponent {
 
   onSubmit() {
     if (this.transactionForm.valid || (this.transactionForm.get('isRecurring')?.value && this.transactionForm.get('title')?.valid && this.transactionForm.get('amount')?.valid && this.transactionForm.get('date')?.valid)) {
-      const formValue = this.transactionForm.getRawValue(); // GetRawValue because category might be disabled
+      const formValue = this.transactionForm.getRawValue();
       
       const transactionData = {
         title: formValue.title!,
         amount: Number(formValue.amount),
         type: formValue.type as TransactionType,
         category: formValue.isRecurring ? 'Suscripciones' : formValue.category as any,
-        date: new Date(formValue.date!)
+        date: new Date(formValue.date!),
+        comment: formValue.comment || undefined
       };
 
       this.transactionService.addTransaction(transactionData);
@@ -94,16 +96,15 @@ export class AddTransactionComponent {
         this.transactionService.addRecurringTemplate(transactionData);
       }
       
-      // Reset form but keep type for convenience
       this.transactionForm.reset({
         title: '',
         amount: 0,
         type: formValue.type as TransactionType,
         category: formValue.type === 'income' ? 'Ahorros' : 'Otros',
         date: new Date().toISOString().split('T')[0],
+        comment: '',
         isRecurring: false
       });
-      // Ensure category is enabled after reset
       this.transactionForm.get('category')?.enable();
     }
   }

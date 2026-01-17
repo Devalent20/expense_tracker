@@ -118,7 +118,7 @@ export class TransactionService {
       .reduce((acc, t) => acc + t.amount, 0)
   );
 
-  addTransaction(transaction: Omit<Transaction, 'id' | 'date' | 'accountId'> & { accountId?: BankAccount, date?: Date }) {
+  addTransaction(transaction: Omit<Transaction, 'id' | 'date' | 'accountId'> & { accountId?: BankAccount, date?: Date, comment?: string }) {
     const newTransaction: Transaction = {
       ...transaction,
       id: crypto.randomUUID(),
@@ -126,6 +126,10 @@ export class TransactionService {
       accountId: transaction.accountId || this.selectedAccount()
     };
     this.transactions.update(items => [newTransaction, ...items]);
+  }
+
+  updateTransaction(id: string, updates: Partial<Transaction>) {
+    this.transactions.update(items => items.map(t => t.id === id ? { ...t, ...updates } : t));
   }
 
   deleteTransaction(id: string) {
@@ -182,7 +186,8 @@ export class TransactionService {
           type: template.type,
           category: template.category,
           date: new Date(month.getFullYear(), month.getMonth(), 1),
-          accountId: template.accountId
+          accountId: template.accountId,
+          comment: template.comment
         };
         transactionsToAdd.push(newTransaction);
         

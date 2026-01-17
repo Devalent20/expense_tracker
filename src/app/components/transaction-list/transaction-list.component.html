@@ -1,6 +1,9 @@
 <div class="transaction-list-card">
   <div class="header-row">
-    <h3 class="title">Movimientos</h3>
+    <div class="title-group">
+      <h3 class="title">Movimientos</h3>
+      <button class="details-link" (click)="onViewDetails()">🔍 Ver detalles</button>
+    </div>
     <select [(ngModel)]="categoryFilter" class="category-filter">
       <option value="">Todas</option>
       <option *ngFor="let cat of allCategories" [value]="cat">{{ icons[cat] }} {{ cat }}</option>

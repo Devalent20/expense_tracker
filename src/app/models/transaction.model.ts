@@ -15,6 +15,7 @@ export interface Transaction {
   date: Date;
   category: TransactionCategory;
   accountId: BankAccount;
+  comment?: string;
 }
 
 export interface RecurringTemplate {
@@ -26,6 +27,7 @@ export interface RecurringTemplate {
   accountId: BankAccount;
   lastGenerated: Date;
   generatedMonths: string[]; // keys like "2026-01"
+  comment?: string;
 }
 
 export const CategoryIcons: Record<TransactionCategory, string> = {
